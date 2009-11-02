@@ -1,3 +1,4 @@
+from inspect import isclass
 import collections
 import re
 
@@ -102,13 +103,23 @@ def compile_routes(routes):
 class Route(object):
     def __init__(self, path, controller=None):
         self.path = path
-        self._controllers = {object: controller}
+        self._controllers = {}
+        self._add(controller)
 
     def __call__(self, controller):
-        self._controllers[object] = controller
+        self._add(controller)
 
     def __repr__(self):
         return '<%s path="%s">' % (self.__class__.__name__, self.path)
+
+    def _add(self, controller):
+        if isclass(controller):
+            # do something to make the instance behave like a function.
+            cls = controller
+            def controller(*args, **kwargs):
+                inst = cls(*args, **kwargs)
+                return inst()
+        self._controllers[object] = controller
 
     def get(self, cls=object):
         get = self._controllers.get
@@ -167,3 +178,4 @@ class Router(object):
         self.routes.append(route)
         self._mapper = None
         return route
+
