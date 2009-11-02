@@ -114,7 +114,6 @@ class Route(object):
 
     def _add(self, controller):
         if isclass(controller):
-            # do something to make the instance behave like a function.
             cls = controller
             def controller(*args, **kwargs):
                 inst = cls(*args, **kwargs)
