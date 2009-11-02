@@ -91,7 +91,7 @@ def compile_routes(routes):
         groups = m.groups()
         try:
             number = groups[1:].index(path)
-        # Can't find rout in groups, this means we probably have no routes
+        # Can't find route in groups, this means we probably have no routes
         except ValueError:
             return None
 
