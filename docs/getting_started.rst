@@ -178,3 +178,34 @@ data; it assumes the status code ``200 OK``.
 
   >>> assert_response("/", app, output)
 
+As a alternative to function-based controllers you may also use
+a class-based approach.
+
+.. code-block:: python
+
+  app = otto.WebObApplication()
+
+  @app.route("/:name")
+  class NameController(object):
+      main_template = lambda self, controller:"The Title is: %s" % controller.Title()
+      # this could have been some chameleon template or such.
+
+      def __init__(self, request, **match_dict):
+          self.request = request
+
+      def __call__(self):
+          return webob.Response(self.main_template(self))
+
+      def Title(self):
+          return "Title here."
+
+  wsgiref.simple_server.make_server('', 8080, app).serve_forever()
+
+::
+
+  The Title is: Title here.
+
+.. -> output
+
+  >>> assert_response("/", app, output)
+
