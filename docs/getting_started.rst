@@ -187,25 +187,26 @@ a class-based approach.
 
   @app.route("/:name")
   class NameController(object):
-      main_template = lambda self, controller:"The Title is: %s" % controller.Title()
+      main_template = lambda self, controller:"<title>%s</title>" % controller.Title()
       # this could have been some chameleon template or such.
 
       def __init__(self, request, **match_dict):
           self.request = request
+          self.name = match_dict.get("name")
 
       def __call__(self):
           return webob.Response(self.main_template(self))
 
       def Title(self):
-          return "Title here."
+          return "Welcome to %s" % self.name
 
   wsgiref.simple_server.make_server('', 8080, app).serve_forever()
 
 ::
 
-  The Title is: Title here.
+  <title>Welcome to otto</title>
 
 .. -> output
 
-  >>> assert_response("/", app, output)
+  >>> assert_response("/otto", app, output)
 
